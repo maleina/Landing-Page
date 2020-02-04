@@ -19,6 +19,7 @@
 */
 const sections = document.querySelectorAll('section');
 const menuList = document.querySelector('#navbar__list');
+let lastActive = sections[0]; //set default to first section
 
 /**
  * End Global Variables
@@ -36,8 +37,21 @@ function getSectionNames(sections) {
 	return sectionNames;
 }
 
-function scrollToSection(event) {
+/* Adapted from https://gomakethings.com/how-to-test-if-an-element-is-in-the-viewport-with-vanilla-javascript/ */
+function isInViewport(element) {
+    let bounding = element.getBoundingClientRect();
+    return (
+        bounding.top >= 0 &&
+        bounding.left >= 0 &&
+        bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+}
 
+function styleActiveSection(element) {
+	lastActive.classList.remove('active-section');
+	element.classList.add('active-section');
+	lastActive = element;
 }
 
 /**
@@ -58,7 +72,13 @@ function buildNav(){
 
 // Add class 'active' to section when near top of viewport
 function getActiveSection(){
-
+	window.addEventListener('scroll', function(event) {
+		for (let i = 0; i < sections.length; i++){
+			if (isInViewport(sections[i])) {
+				styleActiveSection(sections[i]);
+			}
+		}
+	});
 }
 
 // Scroll to anchor ID using scrollTO event
@@ -69,8 +89,6 @@ function scrollToSection(){
             behavior: 'smooth'
         });
 	});
-
-
 }
 
 
@@ -87,5 +105,6 @@ buildNav();
 scrollToSection();
 
 // Set sections as active
+setTimeout(getActiveSection, 0);
 
 
