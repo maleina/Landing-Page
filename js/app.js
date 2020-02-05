@@ -38,11 +38,11 @@ function createNavLinks(sections) {
 }
 
 // Determine if the section is near the top the viewport
-// For our purposes, it must lie in the top third of the screen. May have to adjust as needed.
+// For our purposes, it must lie in the top half of the screen. May have to adjust in the future as needed.
 function isInViewport(element) {
     const bounding = element.getBoundingClientRect();
     return (
-        bounding.top >= 0 && bounding.top <= 0.3*(window.innerHeight || document.documentElement.clientHeight)
+        bounding.top >= 0 && bounding.top <= 0.5*(window.innerHeight || document.documentElement.clientHeight)
     );
 }
 
