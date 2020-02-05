@@ -40,10 +40,9 @@ function createNavLinks(sections) {
 // Determine if the section is near the top the viewport
 // For our purposes, it must lie in the top third of the screen. May have to adjust as needed.
 function isInViewport(element) {
-    let bounding = element.getBoundingClientRect();
+    const bounding = element.getBoundingClientRect();
     return (
         bounding.top >= 0 && bounding.top <= 0.3*(window.innerHeight || document.documentElement.clientHeight)
-
     );
 }
 
@@ -54,7 +53,7 @@ function isInViewport(element) {
 */
 
 // Build the navigation menu
-function buildNav(){
+function buildNav() {
 	document.addEventListener('DOMContentLoaded', () => {
 		const navLinks = createNavLinks(sections);
 		for (let i = 0; i < navLinks.length; i++){
@@ -66,21 +65,25 @@ function buildNav(){
 }
 
 // Add class 'active-section' to a section when it's near the top of the viewport
-function getActiveSection(){
+// Add class 'menu__link-active' to the active section's menu link
+function getActiveSection() {
 	window.addEventListener('scroll', event => {
-		for (const section of sections){
+		for (section of sections){
+			const activeMenuLink = document.querySelector(`a[href="#${section.getAttribute("id")}"]`);
 			if (isInViewport(section)) {
 				section.classList.add('active-section');
+				activeMenuLink.classList.add('menu__link-active');
 			}
 			else {
 				section.classList.remove('active-section');
+				activeMenuLink.classList.remove('menu__link-active');
 			}
 		}
 	});
 }
 
 // Scroll to appropriate anchor ID
-function scrollToSection(){
+function scrollToSection() {
 	menuList.addEventListener('click', event => {
 		event.preventDefault();
 		document.querySelector(event.toElement.hash).scrollIntoView({
