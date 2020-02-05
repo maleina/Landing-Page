@@ -19,7 +19,6 @@
 */
 const sections = document.querySelectorAll('section');
 const menuList = document.querySelector('#navbar__list');
-let lastActive = sections[0]; //set default to first section
 
 /**
  * End Global Variables
@@ -27,31 +26,25 @@ let lastActive = sections[0]; //set default to first section
  *
 */
 
-function getSectionNames(sections) {
-	let sectionNames =[];
+// Create the HTML text for each navigation link
+function createNavLinks(sections) {
+	let navLinks =[];
 	for (let i = 0; i < sections.length; i++) {
 		let htmlString = '<a class = "menu__link" href="#' + sections[i].getAttribute('id') +
 			'">' + sections[i].getAttribute('data-nav') + '</a>';
-		sectionNames.push(htmlString);
+		navLinks.push(htmlString);
 	}
-	return sectionNames;
+	return navLinks;
 }
 
-/* Adapted from https://gomakethings.com/how-to-test-if-an-element-is-in-the-viewport-with-vanilla-javascript/ */
+// Determine if the section is near the top the viewport
+// For our purposes, it must lie in the top third of the screen. May have to adjust as needed.
 function isInViewport(element) {
     let bounding = element.getBoundingClientRect();
     return (
-        bounding.top >= 0 &&
-        bounding.left >= 0 &&
-        bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-        bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
-}
+        bounding.top >= 0 && bounding.top <= 0.3*(window.innerHeight || document.documentElement.clientHeight)
 
-function styleActiveSection(element) {
-	lastActive.classList.remove('active-section');
-	element.classList.add('active-section');
-	lastActive = element;
+    );
 }
 
 /**
@@ -60,30 +53,35 @@ function styleActiveSection(element) {
  *
 */
 
-// build the nav
+// Build the navigation menu
 function buildNav(){
-	const sectionNames = getSectionNames(sections);
-	for (let i = 0; i < sectionNames.length; i++){
-		const listItem = document.createElement('li');
-		listItem.innerHTML = sectionNames[i];
-		menuList.appendChild(listItem);
-	}
+	document.addEventListener('DOMContentLoaded', () => {
+		const navLinks = createNavLinks(sections);
+		for (let i = 0; i < navLinks.length; i++){
+			const listItem = document.createElement('li');
+			listItem.innerHTML = navLinks[i];
+			menuList.appendChild(listItem);
+		}
+	})
 }
 
-// Add class 'active' to section when near top of viewport
+// Add class 'active-section' to a section when it's near the top of the viewport
 function getActiveSection(){
-	window.addEventListener('scroll', function(event) {
-		for (let i = 0; i < sections.length; i++){
-			if (isInViewport(sections[i])) {
-				styleActiveSection(sections[i]);
+	window.addEventListener('scroll', event => {
+		for (const section of sections){
+			if (isInViewport(section)) {
+				section.classList.add('active-section');
+			}
+			else {
+				section.classList.remove('active-section');
 			}
 		}
 	});
 }
 
-// Scroll to anchor ID using scrollTO event
+// Scroll to appropriate anchor ID
 function scrollToSection(){
-	menuList.addEventListener('click', function(event) {
+	menuList.addEventListener('click', event => {
 		event.preventDefault();
 		document.querySelector(event.toElement.hash).scrollIntoView({
             behavior: 'smooth'
@@ -98,10 +96,10 @@ function scrollToSection(){
  *
 */
 
-// Build menu
+// Build navigation menu
 buildNav();
 
-// Scroll to section on link click
+// Scroll to section upon navigation link click
 scrollToSection();
 
 // Set sections as active
