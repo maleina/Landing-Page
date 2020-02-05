@@ -69,14 +69,14 @@ function buildNav() {
 function getActiveSection() {
 	window.addEventListener('scroll', event => {
 		for (section of sections){
-			const activeMenuLink = document.querySelector(`a[href="#${section.getAttribute("id")}"]`);
+			const currMenuLink = document.querySelector(`a[href="#${section.getAttribute("id")}"]`);
 			if (isInViewport(section)) {
 				section.classList.add('active-section');
-				activeMenuLink.classList.add('menu__link-active');
+				currMenuLink.classList.add('menu__link-active');
 			}
 			else {
 				section.classList.remove('active-section');
-				activeMenuLink.classList.remove('menu__link-active');
+				currMenuLink.classList.remove('menu__link-active');
 			}
 		}
 	});
